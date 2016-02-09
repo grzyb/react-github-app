@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { Button, Input } from 'react-bootstrap';
 
 export default React.createClass({
     displayName: 'Search',
@@ -8,17 +8,18 @@ export default React.createClass({
         onSubmit: React.PropTypes.func.isRequired
     },
 
-    handleSearch() {
-        let value = ReactDOM.findDOMNode(this.refs.mainInput).value;
+    handleSearch(event) {
+        event.preventDefault();
+        let value = this.refs.mainInput.getValue();
         this.props.onSubmit(value);
     },
 
     render() {
+        let submitButton = <Button type="submit" onClick={this.handleSearch}>{this.props.buttonLabel}</Button>;
         return(
-            <div>
-                <input type="text" ref="mainInput" placeholder={this.props.placeholder} />
-                <button onClick={this.handleSearch}>{this.props.buttonLabel}</button>
-            </div>
+            <form onSubmit={this.handleSearch}>
+                <Input type="text" ref="mainInput" placeholder={this.props.placeholder} buttonAfter={submitButton} />
+            </form>
         );
     }
 })

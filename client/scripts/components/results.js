@@ -1,12 +1,15 @@
-import React from 'react'
+import React from 'react';
 
-import repositories from '../api/repositories'
+import Result from './result';
+
+import repositories from '../api/repositories';
 
 export default React.createClass({
     displayName: 'Results',
 
     propTypes: {
-        query: React.PropTypes.string
+        query: React.PropTypes.string,
+        language: React.PropTypes.string
     },
 
     getInitialState() {
@@ -16,7 +19,7 @@ export default React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        repositories(nextProps.query).end()
+        repositories(nextProps.query).withLanguage(nextProps.language).end()
             .then(response => {
                 let items = response.items.map(item => {
                     return {
@@ -29,28 +32,24 @@ export default React.createClass({
                 });
                 this.setState({items});
             })
-            .catch(error => console.log('FUCK THIS SHIT!', error));
+            .catch(error => {
+                console.log('FUCK THIS SHIT!', error);
+            });
     },
 
     render() {
         let results = this.state.items.map((item, index) => {
-            let { name, owner, language, avatarUrl, stars } = item;
-            let key = `result-${index}`;
+            let { name, owner } = item;
+            let key = `result-${index}-${owner}-${name}`;
             return (
-                <li key={key}>
-                    <div>{name}</div>
-                    <div>{owner}</div>
-                    <div>{language}</div>
-                    <div>{avatarUrl}</div>
-                    <div>{stars}</div>
-                </li>
+                <Result key={key} {...item} />
             );
         });
 
         return (
-            <ul>
+            <div className="results">
                 {results}
-            </ul>
+            </div>
         )
     }
 });

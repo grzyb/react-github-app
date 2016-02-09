@@ -1,6 +1,9 @@
 import React from 'react';
-import Search from './search';
+import { Grid } from 'react-bootstrap';
+
+import Filters from './filters';
 import Results from './results';
+import Search from './search';
 
 import repositories from '../api/repositories';
 
@@ -9,7 +12,8 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            query: ''
+            query: '',
+            language: ''
         }
     },
 
@@ -17,15 +21,19 @@ export default React.createClass({
         this.setState({query});
     },
 
+    handleFilterChange(language) {
+        this.setState({language});
+    },
+
     render() {
         return (
-            <div className="app">
+            <Grid>
                 <h1>Super Fancy Github Searcher</h1>
                 <Search placeholder="Was suchen Sie?" buttonLabel="Such!"
-                        onSubmit={this.handleSearch}
-                />
-                <Results query={this.state.query} />
-            </div>
+                        onSubmit={this.handleSearch} />
+                <Filters onChange={this.handleFilterChange} language={this.state.language} />
+                <Results query={this.state.query} language={this.state.language} />
+            </Grid>
         );
     }
 });
